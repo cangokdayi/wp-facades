@@ -1,0 +1,21 @@
+{
+	"name": "cangokdayi/wp-facades",
+	"description": "Useful wrapper classes and facades for WordPress development",
+	"type": "library",
+	"license": "proprietary",
+	"autoload": {
+		"psr-4": {
+			"Cangokdayi\\WPFacades\\": "src/"
+		}
+	},
+	"authors": [
+		{
+			"name": "Can Gokdayi",
+			"email": "nocontact@cangokdayi.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+        "php": ">=7.4"
+    }
+}
