@@ -100,7 +100,7 @@ final class Route
      * @param callable|array $callback Controller callback
      * @param callable|array $auth Auth controller 
      * @param null|string $namespace Defaults to "rest"
-     * @internal Can only be called by the "rest_api_init" hook
+     * @internal Can only be called inside the "rest_api_init" hook
      * 
      * @throws \BadMethodCallException If called outside the scope of the
      *                                 "rest_api_init" hook
