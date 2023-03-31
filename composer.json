@@ -21,7 +21,6 @@
 		"php": ">=7.4",
 		"cocur/slugify": "*",
 		"nesbot/carbon": "*",
-		"fakerphp/faker": "*",
-		"composer/composer": "*"
+		"fakerphp/faker": "*"
 	}
 }

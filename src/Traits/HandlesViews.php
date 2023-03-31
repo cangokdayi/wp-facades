@@ -2,8 +2,6 @@
 
 namespace Cangokdayi\WPFacades\Traits;
 
-use Composer\Factory;
-
 /**
  * Helper methods for processing views and static assets.
  */
@@ -201,14 +199,13 @@ trait HandlesViews
 
     private function getBasePath(string $path = ''): string
     {
-        $root = dirname(Factory::getComposerFile());
-
-        return $root . (strlen($path) ? "/$path" : '');
+        return $_ENV['WPF_PROJECT_ROOT']
+            . (strlen($path) ? "/$path" : '');
     }
 
     private function getBaseURI(string $path = ''): string
     {
-        $composerFile = Factory::getComposerFile();
+        $composerFile = "{$_ENV['WPF_PROJECT_ROOT']}/composer.json";
 
         return plugin_dir_url($composerFile) . $path;
     }
