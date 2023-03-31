@@ -16,9 +16,9 @@
 	],
 	"require": {
 		"php": ">=7.4",
-		"cocur/slugify": "dev-main",
-		"nesbot/carbon": "3.x-dev",
-		"fakerphp/faker": "2.x-dev",
+		"cocur/slugify": "*",
+		"nesbot/carbon": "3.*",
+		"fakerphp/faker": "2.*",
 		"composer/composer": "*"
 	}
 }
