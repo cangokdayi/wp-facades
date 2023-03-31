@@ -1,0 +1,167 @@
+@mixin boxShadow($value) {
+	-webkit-box-shadow: $value;
+	-moz-box-shadow: $value;
+	box-shadow: $value;
+}
+
+// my most-used box-shadow values
+@mixin containerShadow() {
+	@include boxShadow(0 0 10px 0 rgba(0, 0, 0, 0.15));
+}
+
+$mediaQueries: (
+	phone: "only screen and (max-width: 43em)",
+	iphone5: "only screen and (device-aspect-ratio: 40/71)",
+	tablet-p: "only screen and (min-width: 43em) and (max-width: 62em)",
+	tablet-l: "only screen and (min-width: 62em) and (max-width: 74.94em)",
+	desktop: "only screen and (min-width: 64.063em) and (max-width: 90em)",
+	desktop-p:
+		"only screen and (min-width: 64.063em) and (max-width: 90em) and (aspect-ratio: 9/16)",
+	xdesktop: "only screen and (min-width: 90.063em) and (max-width: 120em)",
+	xxdesktop: "only screen and (min-width: 120em)",
+	non-retina: "screen and (-webkit-max-device-pixel-ratio: 1)",
+	retina: "screen and (-webkit-min-device-pixel-ratio: 2)",
+);
+
+@mixin screenSize($media...) {
+	@each $mediaType in $media {
+		@if map-has-key($mediaQueries, $mediaType) {
+			@media #{map-get($mediaQueries, $mediaType)} {
+				@content;
+			}
+		} @else {
+			// Specific max width
+			@media only screen and (max-width: #{$media}px) {
+				@content;
+			}
+		}
+	}
+}
+
+@mixin transparentBackground() {
+	background: rgba(0, 0, 0, 0);
+}
+
+@mixin objectFit($type, $position) {
+	-o-object-fit: $type;
+	-o-object-position: $position;
+	object-fit: $type;
+	object-position: $position;
+}
+
+@mixin overflowScroll($type: touch) {
+	overflow-y: auto;
+	-webkit-overflow-scrolling: $type;
+}
+
+@mixin iosScrollBar() {
+	@include overflowScroll();
+	scrollbar-width: thin;
+	scrollbar-color: rgb(83, 83, 83) #ccc;
+
+	&::-webkit-scrollbar {
+		width: 2px;
+		height: 0;
+	}
+
+	&::-webkit-scrollbar-track {
+		margin: 0;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: rgba(0, 0, 0, 0);
+		border-radius: 10px;
+		box-shadow: rgba(255, 255, 255, 0.3) 0 0 0 1px;
+	}
+
+	&:hover::-webkit-scrollbar-thumb {
+		background: rgba(0, 0, 0, 0.45);
+	}
+
+	&:active::-webkit-scrollbar-thumb {
+		background: rgba(0, 0, 0, 0.45);
+	}
+
+	&::-webkit-scrollbar-thumb:hover {
+		background: rgba(0, 0, 0, 0.55);
+	}
+}
+
+@mixin skeletonBackground() {
+	@keyframes shine-lines {
+		0% {
+			background-position: -100px;
+		}
+		40%,
+		100% {
+			background-position: 140px;
+		}
+	}
+	@keyframes shine-avatar {
+		0% {
+			background-position: -32px;
+		}
+		40%,
+		100% {
+			background-position: 208px;
+		}
+	}
+
+	background: #ccc;
+	background-image: linear-gradient(90deg, #ddd 0px, #e8e8e8 40px, #ddd 80px);
+	background-size: 1000px;
+	animation: shine-avatar 1.6s infinite linear;
+}
+
+@mixin flexContainer($wrap: nowrap, $direction: row) {
+	display: flex;
+	flex-direction: $direction;
+	flex-wrap: $wrap;
+
+	& > * {
+		overflow: hidden;
+		min-width: 0;
+		min-height: 0;
+	}
+}
+
+@mixin flexGap($vertical, $horizontal) {
+	margin-bottom: calc(-1 * #{$vertical});
+	margin-left: calc(-1 * #{$horizontal});
+	width: calc(100% + #{$horizontal});
+	max-width: none !important;
+
+	& > * {
+		margin-left: $horizontal;
+		margin-bottom: $vertical;
+		box-sizing: border-box;
+	}
+}
+
+@mixin flexGrid($verticalGap, $horizontalGap, $columns, $flexGrow: 1) {
+	@include flexContainer(wrap, row);
+	@include flexGap($verticalGap, $horizontalGap);
+	$tablet: ceil(calc($columns / 2));
+	$mobile: ceil(calc($columns / 3));
+
+	& > * {
+		flex-grow: $flexGrow;
+		flex-basis: calc(100% / #{$columns} - #{$horizontalGap});
+		box-sizing: border-box;
+
+		@include screenSize(tablet-p, tablet-l) {
+			flex-basis: calc(100% / #{$tablet} - #{$horizontalGap});
+		}
+
+		@include screenSize(phone) {
+			flex-basis: calc(100% / #{$mobile} - #{$horizontalGap});
+		}
+	}
+}
+
+@mixin hoverShadow($percentage: 0.95) {
+	&,
+	& > * {
+		filter: brightness($percentage);
+	}
+}

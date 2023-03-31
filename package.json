@@ -1,0 +1,29 @@
+{
+	"name": "wp-facades",
+	"version": "1.0.0",
+	"description": "Library",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"sass-dev": "sass --watch --style=expanded public/src/css:public/dist/css",
+		"sass-build": "sass --stop-on-error --style=compressed --no-source-map public/src/css:public/dist/css && npm run autoprefix-css",
+		"autoprefix-css": "npx postcss public/dist/css/*.css --use autoprefixer --replace",
+		"dev": "npm run sass-dev",
+		"build": "npm run sass-build"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cangokdayi/wp-facades.git"
+	},
+	"author": "Can Gokdayi",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/cangokdayi/wp-facades/issues"
+	},
+	"homepage": "https://github.com/cangokdayi/wp-facades#readme",
+	"devDependencies": {
+		"postcss": "^8.4.18",
+		"postcss-cli": "^10.0.0",
+		"sass": "^1.56.1"
+	}
+}

@@ -1,0 +1,48 @@
+@import "utils";
+
+.resources {
+	position: relative;
+
+	* {
+		box-sizing: border-box;
+	}
+
+	h1 {
+		padding: 9px 0;
+	}
+
+	& > .header-actions {
+		position: absolute;
+		top: 9px;
+		right: 0;
+		z-index: 10;
+	}
+
+	.container {
+		display: block;
+		max-width: 100%;
+
+		& > section {
+			display: block;
+
+			&:not(:last-child) {
+				margin-bottom: 30px;
+			}
+
+			header {
+				@include flexContainer();
+				align-items: center;
+
+				hr {
+					flex-grow: 1;
+					margin: 0 0 0 10px;
+				}
+			}
+		}
+
+		&.edit-resource {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+}
