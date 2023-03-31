@@ -4,11 +4,26 @@ namespace Cangokdayi\WPFacades\Traits;
 
 /**
  * Helper methods for processing views and static assets.
+ * 
+ * You can use this trait for your views and static assets on your plugin root
+ * directory, we're using the package root level for our internal view files and
+ * such. So the default paths will always resolve to the plugin/project root.
  */
 trait HandlesViews
 {
-    private string $stylesFolder = 'public/dist/css';
-    private string $scriptsFolder = 'public/dist/js';
+    /**
+     * Relative path to the styles folder (dist version)
+     * 
+     * You can override this in your class where you use this trait
+     */
+    protected string $stylesFolder = 'public/dist/css';
+
+    /**
+     * Relative path to the scripts folder (dist version)
+     * 
+     * You can override this in your class where you use this trait
+     */
+    protected string $scriptsFolder = 'public/dist/js';
 
     /**
      * Returns the given view template's content
@@ -20,7 +35,10 @@ trait HandlesViews
      */
     public function getView(string $name, array $args = []): string
     {
-        $file = $this->getBasePath("views/{$name}.php");
+        $file = $this->getBasePath(
+            "views/{$name}.php",
+            $this->isInternalFile($name)
+        );
 
         if (!file_exists($file)) {
             throw new \InvalidArgumentException(
@@ -62,8 +80,9 @@ trait HandlesViews
         string $hookName = 'wp_enqueue_scripts',
         bool $external = false
     ): void {
-        $basePath = $this->getBasePath($this->stylesFolder);
-        $baseURL = $this->getBaseURI($this->stylesFolder);
+        $isInternal = $this->isInternalFile($fileName);
+        $basePath = $this->getBasePath($this->scriptsFolder, $isInternal);
+        $baseURL = $this->getBaseURI($this->scriptsFolder, $isInternal);
 
         add_action(
             $hookName,
@@ -88,8 +107,9 @@ trait HandlesViews
         string $hookName = 'wp_enqueue_scripts',
         bool $external = false
     ): void {
-        $basePath = $this->getBasePath($this->scriptsFolder);
-        $baseURL = $this->getBaseURI($this->scriptsFolder);
+        $isInternal = $this->isInternalFile($fileName);
+        $basePath = $this->getBasePath($this->scriptsFolder, $isInternal);
+        $baseURL = $this->getBaseURI($this->scriptsFolder, $isInternal);
 
         add_action(
             $hookName,
@@ -109,11 +129,8 @@ trait HandlesViews
         string $fileName,
         string $hookName = 'wp_footer'
     ): void {
-        $file = $this->getBasePath($this->stylesFolder) . "/$fileName";
-        $markup = sprintf(
-            "<style>%s</style>",
-            file_exists($file) ? file_get_contents($file) : ''
-        );
+        $file = $this->getStaticFile($fileName, $this->stylesFolder);
+        $markup = "<style>{$file}</style>";
 
         $this->printMarkupOnAction($hookName, $markup);
     }
@@ -125,11 +142,8 @@ trait HandlesViews
         string $fileName,
         string $hookName = 'wp_footer'
     ): void {
-        $file = $this->getBasePath($this->scriptsFolder) . "/$fileName";
-        $markup = sprintf(
-            "<script>%s</script>",
-            file_exists($file) ? file_get_contents($file) : ''
-        );
+        $file = $this->getStaticFile($fileName, $this->scriptsFolder);
+        $markup = "<script>{$file}</script>";
 
         $this->printMarkupOnAction($hookName, $markup);
     }
@@ -188,7 +202,7 @@ trait HandlesViews
             ? $type
             : 'error';
 
-        $notice = $this->getView('admin-notice', [
+        $notice = $this->getView('//admin-notice', [
             'type'        => $type,
             'dismissable' => $dismissable ? 'is-dismissable' : '',
             'message'     => $message
@@ -197,16 +211,58 @@ trait HandlesViews
         $this->printMarkupOnAction('admin_notices', $notice);
     }
 
-    private function getBasePath(string $path = ''): string
+    /**
+     * Returns the contents of the given static asset file
+     * 
+     * @param string $dir Relative path to the styles or scripts folder
+     */
+    private function getStaticFile(string $fileName, string $dir): string
     {
-        return $_ENV['WPF_PROJECT_ROOT']
-            . (strlen($path) ? "/$path" : '');
+        $file = $this->getBasePath(
+            $dir,
+            $this->isInternalFile($fileName)
+        ) . "/$fileName";
+
+        return file_exists($file)
+            ? file_get_contents($file)
+            : '';
     }
 
-    private function getBaseURI(string $path = ''): string
-    {
-        $composerFile = "{$_ENV['WPF_PROJECT_ROOT']}/composer.json";
+    private function getBasePath(
+        string $path = '',
+        bool $isInternal = false
+    ): string {
+        $root = $isInternal
+            ? $_ENV['WPF_PACKAGE_DIR']
+            : $_ENV['WPF_PROJECT_ROOT'];
 
-        return plugin_dir_url($composerFile) . $path;
+        return $root . (strlen($path) ? "/$path" : '');
+    }
+
+    private function getBaseURI(
+        string $path = '',
+        bool $isInternal = false
+    ): string {
+        $root = $isInternal
+            ? $_ENV['WPF_PACKAGE_DIR']
+            : $_ENV['WPF_PROJECT_ROOT'];
+
+        return plugin_dir_url("{$root}/composer.json") . $path;
+    }
+
+    /**
+     * Returns true if the given filename is for an internal view or static file
+     * 
+     * It will also remove the '//' part from the file if it's internal
+     */
+    private function isInternalFile(string &$file): bool
+    {
+        $isInterval = '//' === substr($file, 0, 2);
+
+        $file = $isInterval 
+            ? substr($file, 2) 
+            : $file;
+
+        return $isInterval;
     }
 }

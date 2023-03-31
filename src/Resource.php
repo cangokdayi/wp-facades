@@ -198,7 +198,9 @@ abstract class Resource extends WP_List_Table
      */
     protected function getDefaultView(): string
     {
-        return $this->getView('resource-page', [
+        $this->printStyle('//resource.css', 'print_resource_page_styles');
+
+        return $this->getView('//resource-page', [
             'page_title'     => $this->label(),
             'header_actions' => $this->getCreateButton(),
             'list_table'     => $this->display()
@@ -283,9 +285,9 @@ abstract class Resource extends WP_List_Table
     }
 
     /**
-     * Renders the list table or the edit form and returns its markup
+     * Renders the list table or the edit form view
      */
-    public function render(): string
+    public function render(): void
     {
         $this->prepare_items();
         $this->handleFormAction();
@@ -296,18 +298,21 @@ abstract class Resource extends WP_List_Table
             ?? $this->model->{$primaryKey}
             ?? null;
 
-        $this->printStyle('resource.css', 'print_resource_page_styles');
+        do_action('print_resource_page_styles');
 
-        return $action && in_array($action, ['edit', 'create'])
+        echo $action && in_array($action, ['edit', 'create'])
             ? $this->getFormView($resourceId)
             : $this->getDefaultView();
     }
 
+    /**
+     * We override this because we don't need it to echo the list table, we only
+     * need the markup since we just insert the table to our custom view and
+     * echo the view instead.
+     */
     final public function display(): string
     {
         ob_start();
-
-        do_action('print_resource_page_styles');
 
         parent::display();
 
