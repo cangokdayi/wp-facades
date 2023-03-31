@@ -14,11 +14,11 @@
 			"email": "nocontact@cangokdayi.com"
 		}
 	],
-	"minimum-stability": "stable",
 	"require": {
 		"php": ">=7.4",
 		"cocur/slugify": "dev-main",
 		"nesbot/carbon": "3.x-dev",
-		"fakerphp/faker": "2.x-dev"
+		"fakerphp/faker": "2.x-dev",
+		"composer/composer": "*"
 	}
 }
