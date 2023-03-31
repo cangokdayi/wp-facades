@@ -44,7 +44,7 @@ class MigrationService
         );
 
         if (!is_dir($this->migrationsDir)) {
-            throw new \InvalidMenuException(
+            throw new \InvalidArgumentException(
                 'The given path is not a directory'
             );
         }
