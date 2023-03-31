@@ -234,7 +234,7 @@ abstract class Model
     public function saveOrUpdate(): void
     {
         if (!$this->exists()) {
-            return $this->save();
+            $this->save();
         }
 
         $this->update();
