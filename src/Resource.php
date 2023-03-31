@@ -94,7 +94,7 @@ abstract class Resource extends WP_List_Table
         $slugger = new Slugify();
 
         $this->model = $this->newModel();
-        $this->database = $this->getDatabase();
+        $this->database = $this->database();
         $this->plural = $this->_args['plural']
             ?? $slugger->slugify($this->label(), '_');
 
@@ -357,7 +357,7 @@ abstract class Resource extends WP_List_Table
 
     final public function column_default($item, $column)
     {
-        return $this->getColumn($item, $column) 
+        return $this->getColumn($item, $column)
             ?? 'N/A';
     }
 
