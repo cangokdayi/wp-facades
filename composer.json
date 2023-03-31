@@ -16,6 +16,10 @@
 	],
 	"minimum-stability": "dist",
 	"require": {
-        "php": ">=7.4"
-    }
+		"php": ">=7.4",
+		"composer/composer": "2.6.x-dev",
+		"cocur/slugify": "dev-main",
+		"nesbot/carbon": "3.x-dev",
+		"fakerphp/faker": "2.x-dev"
+	}
 }
