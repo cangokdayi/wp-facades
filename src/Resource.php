@@ -298,11 +298,11 @@ abstract class Resource extends WP_List_Table
             ?? $this->model->{$primaryKey}
             ?? null;
 
-        do_action('print_resource_page_styles');
-
         echo $action && in_array($action, ['edit', 'create'])
             ? $this->getFormView($resourceId)
             : $this->getDefaultView();
+
+        do_action('print_resource_page_styles');
     }
 
     /**
