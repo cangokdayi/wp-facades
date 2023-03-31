@@ -6,7 +6,10 @@
 	"autoload": {
 		"psr-4": {
 			"Cangokdayi\\WPFacades\\": "src/"
-		}
+		},
+		"files": [
+			"bootstrap.php"
+		]
 	},
 	"authors": [
 		{
