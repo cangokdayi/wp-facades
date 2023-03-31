@@ -14,7 +14,7 @@
 			"email": "nocontact@cangokdayi.com"
 		}
 	],
-	"minimum-stability": "dev",
+	"minimum-stability": "dist",
 	"require": {
         "php": ">=7.4"
     }
