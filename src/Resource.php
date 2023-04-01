@@ -195,6 +195,8 @@ abstract class Resource extends WP_List_Table
 
     /**
      * Returns the view template of this resource for list table screens.
+     * 
+     * It's recommended that you override this view and use your own.
      */
     protected function getDefaultView(): string
     {
@@ -261,7 +263,7 @@ abstract class Resource extends WP_List_Table
         try {
             $this->validateEditableColumns($editableColumns, $_POST);
         } catch (\Throwable $e) {
-            $this->displayNotification($e->getMessage());
+            $this->createAdminNotification($e->getMessage());
             return;
         }
 

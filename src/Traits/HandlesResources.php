@@ -3,7 +3,6 @@
 namespace Cangokdayi\WPFacades\Traits;
 
 use Cangokdayi\WPFacades\Traits\HandlesViews;
-use WP_Post;
 
 /**
  * Helper methods for resource classes
@@ -107,28 +106,6 @@ trait HandlesResources
             ARRAY_FILTER_USE_KEY
         );
     }
-
-    /**
-     * Displays the given admin notice on edit resource pages
-     */
-    public function displayNotification(
-        string $message,
-        string $type = 'error',
-        bool $dismissable = false
-    ) {
-        $type = in_array($type, ['error', 'success', 'warning', 'info'])
-            ? $type
-            : 'error';
-
-        $notice = $this->getView('admin-notice', [
-            'type'        => $type,
-            'dismissable' => $dismissable ? 'is-dismissable' : '',
-            'message'     => $message
-        ]);
-
-        $this->printMarkupOnAction('yuble_api_admin_notices', $notice);
-    }
-
 
     /**
      * Returns a delete button markup for row actions on the primary column
