@@ -153,15 +153,9 @@ trait HandlesResources
      */
     protected function getEditButton($item): string
     {
-        $args = [
-            'page'          => esc_attr($_REQUEST['page']),
-            'action'        => 'edit',
-            $this->singular => $this->getColumn($item, 'id')
-        ];
-
         return sprintf(
             '<a href="%s" class="resource__actions edit-btn">%s</a>',
-            $this->toQueryString($args),
+            $this->getEditResourceLink($item),
             __('Edit')
         );
     }
@@ -183,5 +177,19 @@ trait HandlesResources
             $this->toQueryString($args),
             $label ?? __('Add New')
         );
+    }
+
+    /**
+     * Returns the edit resource page link
+     */
+    public function getEditResourceLink($item): string
+    {
+        $args = [
+            'page'          => esc_attr($_REQUEST['page']),
+            'action'        => 'edit',
+            $this->singular => $this->getColumn($item, 'id')
+        ];
+
+        return get_admin_url(null, "admin.php{$this->toQueryString($args)}");
     }
 }
