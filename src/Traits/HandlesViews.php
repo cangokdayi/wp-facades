@@ -175,7 +175,7 @@ trait HandlesViews
         foreach ($options as $value => $label) {
             $isSelected = is_array($current)
                 ? in_array($value, $current)
-                : (!is_null($current) && $value === $current);
+                : (!is_null($current) && $value == $current);
 
             $markup .= sprintf(
                 '<option value="%s" %s>%s</option>',
