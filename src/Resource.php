@@ -103,6 +103,15 @@ abstract class Resource extends WP_List_Table
     }
 
     /**
+     * Called before rendering the views, you can register/print your static
+     * assets here.
+     */
+    public function loadAssets(): void
+    {
+        $this->printStyle('//resource.css', 'print_resource_page_assets');
+    }
+
+    /**
      * Deletes the given item from the database
      */
     protected function deleteItem(int $itemId)
@@ -200,8 +209,6 @@ abstract class Resource extends WP_List_Table
      */
     protected function getDefaultView(): string
     {
-        $this->printStyle('//resource.css', 'print_resource_page_styles');
-
         return $this->getView('//resource-page', [
             'page_title'     => $this->label(),
             'header_actions' => $this->getCreateButton(),
@@ -293,6 +300,7 @@ abstract class Resource extends WP_List_Table
     {
         $this->prepare_items();
         $this->handleFormAction();
+        $this->loadAssets();
 
         $action = $_REQUEST['action'] ?? null;
         $primaryKey = $this->model->getPrimaryColumn();
@@ -304,7 +312,7 @@ abstract class Resource extends WP_List_Table
             ? $this->getFormView($resourceId)
             : $this->getDefaultView();
 
-        do_action('print_resource_page_styles');
+        do_action('print_resource_page_assets');
     }
 
     /**
