@@ -110,6 +110,16 @@ class TableSchema
     }
 
     /**
+     * Returns true if the given column is a numeric type
+     */
+    public function isNumeric(string $column): bool
+    {
+        $type = $this->columns[$column]['type'];
+
+        return $this->getDataType($type) === 'number';
+    }
+
+    /**
      * Returns true if the given value is valid for the column's type & length
      * 
      * @throws \InvalidArgumentException If the given column is unrecognized

@@ -404,6 +404,14 @@ abstract class Model
     }
 
     /**
+     * Returns the table schema of this model
+     */
+    public function getSchema(): TableSchema
+    {
+        return $this->schema;
+    }
+
+    /**
      * Returns a new instance of this model
      */
     public function fresh(): static

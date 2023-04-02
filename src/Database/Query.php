@@ -13,6 +13,8 @@ class Query
 
     private Model $model;
 
+    private TableSchema $schema;
+
     private string $table;
 
     /**
@@ -34,6 +36,7 @@ class Query
     {
         $this->model = $model;
         $this->table = $model->getTable();
+        $this->schema = $model->getSchema();
     }
 
     /**
@@ -49,11 +52,11 @@ class Query
             throw new \InvalidArgumentException();
         }
 
-        $this->conditions[] = [
-            'column'   => $column,
-            'value'    => esc_sql($value),
-            'operator' => is_null($value) ? Operator::NULL : Operator::EQUAL
-        ];
+        $this->addCondition(
+            $column,
+            $value,
+            is_null($value) ? Operator::NULL : Operator::EQUAL
+        );
 
         return $this;
     }
@@ -71,13 +74,11 @@ class Query
             throw new \InvalidArgumentException();
         }
 
-        $this->conditions[] = [
-            'column'   => $column,
-            'value'    => esc_sql($value),
-            'operator' => is_null($value)
-                ? Operator::NOT_NULL
-                : Operator::NOT_EQUAL
-        ];
+        $this->addCondition(
+            $column,
+            $value,
+            is_null($value) ? Operator::NOT_NULL : Operator::NOT_EQUAL
+        );
 
         return $this;
     }
@@ -162,6 +163,9 @@ class Query
     private function buildConditions(): string
     {
         $query = [];
+        $wrapWithQuotes = fn ($val) => is_string($val)
+            ? "'{$val}'"
+            : $val;
 
         foreach ($this->conditions as $condition) {
             [$column, $value, $operator] = array_values($condition);
@@ -170,7 +174,7 @@ class Query
 
             $query[] = is_null($value)
                 ? "`{$column}` {$operator}"
-                : "`{$column}` {$operator} '{$value}'";
+                : "`{$column}` {$operator} {$wrapWithQuotes($value)}";
         }
 
         return count($query)
@@ -195,5 +199,39 @@ class Query
                 {$this->buildConditions()}
                 LIMIT {$limit}
                 OFFSET {$offset}";
+    }
+
+    /**
+     * Casts the numeric columns from string values for accurate queries
+     */
+    private function castNumericValue(string $column, $value)
+    {
+        $isNumeric = $this->schema->isNumeric($column);
+        $castedValue = (bool) preg_match('/\./', $value)
+            ? floatval($value)
+            : intval($value);
+
+        return (!$isNumeric || is_int($value) || is_float($value))
+            ? $value
+            : $castedValue;
+    }
+
+    /**
+     * Adds a new condition with the given arguments
+     *
+     * @param mixed $value
+     */
+    private function addCondition(
+        string $column,
+        $value,
+        string $operator
+    ): void {
+        $value = $this->castNumericValue($column, esc_sql($value));
+
+        $this->conditions[] = [
+            'column'   => $column,
+            'value'    => $value,
+            'operator' => $operator
+        ];
     }
 }
