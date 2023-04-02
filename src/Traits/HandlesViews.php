@@ -149,6 +149,16 @@ trait HandlesViews
     }
 
     /**
+     * Loads the given style on the specified action hook
+     */
+    public function enqueueStyle(
+        string $handle,
+        string $hookName = 'wp_enqueue_scripts'
+    ) {
+        add_action($hookName, fn () => wp_enqueue_style($handle));
+    }
+
+    /**
      * Prints the given markup on the specified action hook
      */
     public function printMarkupOnAction(string $hookName, string $content): void
@@ -261,8 +271,8 @@ trait HandlesViews
     {
         $isInterval = '//' === substr($file, 0, 2);
 
-        $file = $isInterval 
-            ? substr($file, 2) 
+        $file = $isInterval
+            ? substr($file, 2)
             : $file;
 
         return $isInterval;
