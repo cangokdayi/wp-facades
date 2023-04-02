@@ -10,6 +10,6 @@ you ***shouldn't*** expect to find copy-pasted code from Laravel's codebase.
 Code is optimized for PHP 7.4 and I haven't tested with earlier versions. But I can confirm that I
 didn't come accross any issues with PHP 8.0 as well.
 
-If you found an issue, feel free create a PR that fixes it. 
+If you found an issue, feel free to create a PR that fixes it. 
 
 \#WordPressCodingStandardsMyAss
