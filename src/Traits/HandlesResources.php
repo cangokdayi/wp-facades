@@ -196,6 +196,9 @@ trait HandlesResources
     /**
      * Displays an admin notification on resource page 
      * 
+     * Make sure you call the hook "resource_page_notices" in your custom views
+     * just below or above the page title.
+     * 
      * @param string $type Can be "error", "success", "warning", or "info"
      */
     public function displayResourceNotice(
