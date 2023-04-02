@@ -43,7 +43,7 @@ abstract class Model
     {
         $this->table = $this->tableName($this->table);
         $this->schema = new TableSchema($this->table);
-        
+
         $this->validatePrimaryKey($this->primaryCol);
         $this->fill($attributes);
     }
@@ -211,12 +211,11 @@ abstract class Model
     public function update(): void
     {
         $this->validateAttributes();
-        $key = $this->primaryCol;
 
         $sql = $this->database()->update(
             $this->table,
             $this->getAttributes(),
-            [$key => $this->attributes[$key]]
+            $this->toArray()
         );
 
         if (false === $sql) {
@@ -392,7 +391,14 @@ abstract class Model
      */
     public function exists(): bool
     {
-        return isset($this->attributes[$this->primaryCol]);
+        $query = static::query();
+
+        foreach ($this->toArray() as $attr => $val) {
+            $query = $query->where($attr, $val);
+        }
+
+        return isset($this->attributes[$this->primaryCol])
+            ?: is_object($query->first());
     }
 
     /**
