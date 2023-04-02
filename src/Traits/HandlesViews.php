@@ -81,8 +81,8 @@ trait HandlesViews
         bool $external = false
     ): void {
         $isInternal = $this->isInternalFile($fileName);
-        $basePath = $this->getBasePath($this->scriptsFolder, $isInternal);
-        $baseURL = $this->getBaseURI($this->scriptsFolder, $isInternal);
+        $basePath = $this->getBasePath($this->stylesFolder, $isInternal);
+        $baseURL = $this->getBaseURI($this->stylesFolder, $isInternal);
 
         add_action(
             $hookName,
