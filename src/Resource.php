@@ -270,7 +270,7 @@ abstract class Resource extends WP_List_Table
         try {
             $this->validateEditableColumns($editableColumns, $_POST);
         } catch (\Throwable $e) {
-            $this->createAdminNotification($e->getMessage());
+            $this->displayResourceNotice($e->getMessage());
             return;
         }
 
@@ -286,6 +286,8 @@ abstract class Resource extends WP_List_Table
 
         $model->fill($values);
         $model->saveOrUpdate();
+
+        $this->displayResourceNotice('Resource was updated', 'success');
 
         // to display the edit page after creating new resources
         if ($action === 'create') {
