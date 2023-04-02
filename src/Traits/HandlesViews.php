@@ -192,11 +192,13 @@ trait HandlesViews
      * Displays an admin notice with the given arguments
      * 
      * @param string $type Can be "error", "success", "warning", or "info"
+     * @param string $hookName Action hook to display this notice in
      */
     public function createAdminNotification(
         string $message,
         string $type = 'error',
-        bool $dismissable = false
+        bool $dismissable = false,
+        string $hookName = 'admin_notices'
     ): void {
         $type = in_array($type, ['error', 'success', 'warning', 'info'])
             ? $type
@@ -208,7 +210,7 @@ trait HandlesViews
             'message'     => $message
         ]);
 
-        $this->printMarkupOnAction('admin_notices', $notice);
+        $this->printMarkupOnAction($hookName, $notice);
     }
 
     /**

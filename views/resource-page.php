@@ -3,6 +3,8 @@
 <div class="wrap resources">
     <h1>{{page_title}}</h1>
 
+    <?php do_action('resource_page_notices'); ?>
+
     <div class="header-actions">
         {{header_actions}}
     </div>

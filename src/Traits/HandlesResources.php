@@ -192,4 +192,22 @@ trait HandlesResources
 
         return get_admin_url(null, "admin.php{$this->toQueryString($args)}");
     }
+
+    /**
+     * Displays an admin notification on resource page 
+     * 
+     * @param string $type Can be "error", "success", "warning", or "info"
+     */
+    public function displayResourceNotice(
+        string $message,
+        string $type = 'error',
+        bool $isDismissable = false
+    ): void {
+        $this->createAdminNotification(
+            $message,
+            $type,
+            $isDismissable,
+            'resource_page_notices'
+        );
+    }
 }
