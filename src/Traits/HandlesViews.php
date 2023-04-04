@@ -149,14 +149,25 @@ trait HandlesViews
     }
 
     /**
-     * Loads the given style on the specified action hook
+     * Loads the given registered style on the specified action hook
      */
     public function enqueueStyle(
         string $handle,
         string $hookName = 'wp_enqueue_scripts'
-    ) {
+    ): void {
         add_action($hookName, fn () => wp_enqueue_style($handle));
     }
+
+    /**
+     * Loads the given registered script on the specified hook
+     */
+    public function enqueueScript(
+        string $handle,
+        string $hookName = 'wp_footer'
+    ): void {
+        add_action($hookName, fn () => wp_enqueue_script($handle));
+    }
+
 
     /**
      * Prints the given markup on the specified action hook
