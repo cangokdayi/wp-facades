@@ -78,7 +78,8 @@ trait HandlesViews
         string $handle,
         string $fileName,
         string $hookName = 'wp_enqueue_scripts',
-        bool $external = false
+        bool $external = false,
+        array $dependencies = []
     ): void {
         $isInternal = $this->isInternalFile($fileName);
         $basePath = $this->getBasePath($this->stylesFolder, $isInternal);
@@ -89,7 +90,7 @@ trait HandlesViews
             fn () => wp_register_style(
                 $handle,
                 $external ? $fileName : "$baseURL/$fileName",
-                [],
+                $dependencies,
                 $external ? false : filemtime("$basePath/$fileName")
             )
         );
@@ -105,7 +106,8 @@ trait HandlesViews
         string $handle,
         string $fileName,
         string $hookName = 'wp_enqueue_scripts',
-        bool $external = false
+        bool $external = false,
+        array $dependencies = []
     ): void {
         $isInternal = $this->isInternalFile($fileName);
         $basePath = $this->getBasePath($this->scriptsFolder, $isInternal);
@@ -116,7 +118,7 @@ trait HandlesViews
             fn () => wp_register_script(
                 $handle,
                 $external ? $fileName : "$baseURL/$fileName",
-                [],
+                $dependencies,
                 $external ? false : filemtime("$basePath/$fileName")
             )
         );
