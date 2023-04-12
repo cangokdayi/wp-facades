@@ -34,6 +34,11 @@ abstract class Model
     protected array $attributes = [];
 
     /**
+     * Original attributes from the database record
+     */
+    private array $original = [];
+
+    /**
      * @throws \InvalidArgumentException If there are guarded props in the given
      *                                   attributes
      * 
@@ -108,6 +113,7 @@ abstract class Model
         foreach ((array) $item as $attr => $value) {
             $this->validateAttribute($attr, $value);
             $this->attributes[$attr] = $value;
+            $this->original[$attr] = $value;
         }
 
         return $this;
@@ -211,11 +217,13 @@ abstract class Model
     public function update(): void
     {
         $this->validateAttributes();
+        $primaryKey = $this->attributes[$this->primaryCol]
+            ?? $this->fetchPrimaryKey();
 
         $sql = $this->database()->update(
             $this->table,
             $this->getAttributes(),
-            $this->toArray()
+            [$this->primaryCol => $primaryKey]
         );
 
         if (false === $sql) {
@@ -234,6 +242,7 @@ abstract class Model
     {
         if (!$this->exists()) {
             $this->save();
+            return;
         }
 
         $this->update();
@@ -391,11 +400,7 @@ abstract class Model
      */
     public function exists(): bool
     {
-        $query = static::query();
-
-        foreach ($this->toArray() as $attr => $val) {
-            $query = $query->where($attr, $val);
-        }
+        $query = $this->buildQueryFromAttributes();
 
         return isset($this->attributes[$this->primaryCol])
             ?: is_object($query->first());
@@ -423,5 +428,35 @@ abstract class Model
     public function fresh(): static
     {
         return new static();
+    }
+
+    /**
+     * Builds a query builder with all of the original attributes of this model
+     * as where conditions.
+     */
+    public function buildQueryFromAttributes(): Query
+    {
+        $query = static::query();
+
+        foreach ($this->original as $attr => $val) {
+            $query = $query->where($attr, $val);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Queries the current model and returns its primary key from the database
+     * 
+     * Some existing models are initiated without their primary keys present so
+     * update() would fail and this method takes care of that problem.
+     */
+    private function fetchPrimaryKey(): ?int
+    {
+        $model = $this->buildQueryFromAttributes()->first();
+
+        return is_object($model)
+            ? $model->{$this->primaryCol}
+            : null;
     }
 }
