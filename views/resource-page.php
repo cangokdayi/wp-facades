@@ -12,6 +12,8 @@
     <hr class="wp-header-end">
 
     <div class="container resource card">
-        {{list_table}}
+        <form method="POST">
+            {{list_table}}
+        </form>
     </div>
 </div>

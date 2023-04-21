@@ -225,19 +225,12 @@ abstract class Resource extends WP_List_Table
             ($_POST['action'] ?? null),
             ($_POST['action2'] ?? null)
         ]);
-
-        $nonce = $_REQUEST[$this->nonceKey] ?? '';
-        $nonceIsValid = wp_verify_nonce($nonce, $this->nonce)
-            ?: wp_verify_nonce($nonce, "bulk-{$this->plural}");
-
+        
         if ('delete' != $this->current_action() && !$isBulkDelete) {
             return;
         }
 
-        if (!$nonceIsValid) {
-            http_response_code(403);
-            exit;
-        }
+        $this->verifyNonce();
 
         $items = ($_POST[$this->plural] ?? null)
             ?: [$_GET[$this->singular]];
@@ -292,6 +285,22 @@ abstract class Resource extends WP_List_Table
         // to display the edit page after creating new resources
         if ($action === 'create') {
             $this->model = $model;
+        }
+    }
+
+    /**
+     * Validates the nonce for bulk actions and terminates the current request
+     * with a 403 status code if it's invalid
+     */
+    protected function verifyNonce(): void
+    {
+        $nonce = $_REQUEST[$this->nonceKey] ?? '';
+        $nonceIsValid = wp_verify_nonce($nonce, $this->nonce)
+            ?: wp_verify_nonce($nonce, "bulk-{$this->plural}");
+
+        if (!$nonceIsValid) {
+            http_response_code(403);
+            exit;
         }
     }
 
