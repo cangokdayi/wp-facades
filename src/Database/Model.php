@@ -431,18 +431,27 @@ abstract class Model
     }
 
     /**
-     * Builds a query builder with all of the original attributes of this model
-     * as where conditions.
+     * Builds a query builder with all of the original (or current) attributes
+     * of this model as where conditions.
+     * 
+     * @param boolean $tryCurrent When set to TRUE, currently set attributes 
+     *                            will be used to build the query only if the
+     *                            original attributes list is empty.
      */
-    public function buildQueryFromAttributes(): Query
+    public function buildQueryFromAttributes(bool $tryCurrent = true): Query
     {
         $query = static::query();
+        $attributes = empty($this->original) && $tryCurrent
+            ? $this->attributes
+            : $this->original;
 
-        foreach ($this->original as $attr => $val) {
+        foreach ($attributes as $attr => $val) {
             $query = $query->where($attr, $val);
         }
 
-        return $query;
+        return empty($attributes) 
+            ? $query->whereKey(-1)
+            : $query;
     }
 
     /**
