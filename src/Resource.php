@@ -18,6 +18,8 @@ use WP_List_Table;
  * To cast the values of specific columns, create a new public method and
  * name it with column's name and prefix it with "column_" 
  * Example: "column_first_name"
+ * 
+ * @todo Sorting doesn't work due to missing handler, add it. 
  */
 abstract class Resource extends WP_List_Table
 {
