@@ -20,6 +20,13 @@ use WP_REST_Response;
  * All of the route callback methods of the fish classes must be declared
  * as "protected" methods otherwise the base controller class won't be able 
  * to intercept them when they're called.
+ * 
+ * You can throw errors from your callback or auth callback methods, they'll be
+ * catched & converted to WP_REST_Response or WP_Error objects at the top-level
+ * here inside the getErrorResponse() method.
+ * 
+ * @todo Assert the method accessibility in `Route::initCallback()` to avoid
+ *       registering routes with public controller methods.
  */
 abstract class Controller
 {
@@ -60,21 +67,22 @@ abstract class Controller
     protected function getErrorResponse(\Throwable $exception): object
     {
         $isAuthError = is_a($exception, Unauthorized::class)
-            || is_a($exception, Forbidden::class);
+            || is_a($exception, Forbidden::class)
+            || in_array($exception->getCode(), [401, [403]]);
+
+        $errorCode = $exception instanceof CustomException
+            ? $exception->getType()
+            : 'InternalServerError';
 
         // WP permission_callback methods can only return boolean 
         // or WP_Error objects thus we need to modify the behavior
         if ($isAuthError) {
             return new WP_Error(
-                $exception->getType(),
-                'Unauthorized',
+                $errorCode,
+                $exception->getMessage(),
                 ['status' => $this->getStatusCode($exception)]
             );
         }
-
-        $errorCode = $exception instanceof CustomException
-            ? $exception->getType()
-            : (new \ReflectionClass($exception))->getShortName();
 
         return new WP_REST_Response(
             $this->errorTemplate(
@@ -83,7 +91,7 @@ abstract class Controller
             ),
             $this->getStatusCode($exception)
         );
-    } 
+    }
 
     /**
      * Masks the WP_Error responses returned from auth controllers to modify the
