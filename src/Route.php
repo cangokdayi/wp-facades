@@ -156,7 +156,7 @@ final class Route
      * be present in the parsed pattern.
      * 
      * @example The route: `/users/{userID}/posts`
-     *          would become: `/users/(?P<{userID>[\w]+)/posts`
+     *          would become: `/users/(?P<userID>[\w]+)/posts`
      */
     private function parseRoute(string $route): string
     {
