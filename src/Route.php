@@ -175,5 +175,25 @@ final class Route
         add_action('rest_api_init', function () use ($args) {
             $this->registerRoute(...$args);
         });
+
+        add_action('admin_enqueue_scripts', [$this, 'insertAdminPanelNonce']);
+    }
+
+    /**
+     * Hooks into the "admin_enqueue_scripts" action and exposes the rest API
+     * host and a nonce to authenticate admins through their user sessions.
+     * 
+     * Localized values can be accessed from `window.wpRestApiSettings` on the
+     * client-side.
+     * 
+     * @see https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/
+     */
+    public function insertAdminPanelNonce(): void
+    {
+        wp_enqueue_script('wp-api');
+        wp_localize_script('wp-api', 'wpRestApiSettings', [
+            'host'  => esc_url_raw(rest_url()),
+            'nonce' => wp_create_nonce('wp_rest')
+        ]);
     }
 }
