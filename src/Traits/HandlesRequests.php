@@ -10,7 +10,7 @@ use WP_REST_Request;
 trait HandlesRequests
 {
     /**
-     * Returns an HTTP error response template with the given values
+     * Returns a JSON error response template with the given values
      */
     public function errorTemplate(string $errorCode, string $message): array
     {
@@ -20,6 +20,20 @@ trait HandlesRequests
                 'type'    => $errorCode,
                 'message' => $message
             ]
+        ];
+    }
+
+    /**
+     * Returns a JSON response template with the given arguments
+     *
+     * @param string|array $data Payload
+     * @param string $status Status text - defaults to "OK"
+     */
+    public function responseTemplate($data, string $status = 'OK'): array
+    {
+        return [
+            'status' => $status,
+            'data'   => $data
         ];
     }
 
