@@ -25,6 +25,6 @@ if (!function_exists(__NAMESPACE__ . '\getProjectRoot')) {
      */
     function getProjectRoot(): string
     {
-        return dirname(getPackageRoot(), 4);
+        return dirname(getPackageRoot(), 3);
     }
 }
