@@ -4,4 +4,4 @@
 $_ENV['WPF_PROJECT_ROOT'] = dirname(__FILE__, 4);
 
 # for internal view files and such
-$_ENV ['WPF_PACKAGE_DIR'] = dirname(__FILE__);
+$_ENV['WPF_PACKAGE_DIR'] = dirname(__FILE__);
