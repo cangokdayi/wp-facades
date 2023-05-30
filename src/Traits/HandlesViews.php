@@ -2,6 +2,9 @@
 
 namespace Cangokdayi\WPFacades\Traits;
 
+use function Cangokdayi\WPFacades\getPackageRoot;
+use function Cangokdayi\WPFacades\getProjectRoot;
+
 /**
  * Helper methods for processing views and static assets.
  * 
@@ -258,8 +261,8 @@ trait HandlesViews
         bool $isInternal = false
     ): string {
         $root = $isInternal
-            ? $_ENV['WPF_PACKAGE_DIR']
-            : $_ENV['WPF_PROJECT_ROOT'];
+            ? getPackageRoot()
+            : getProjectRoot();
 
         return $root . (strlen($path) ? "/$path" : '');
     }
@@ -269,8 +272,8 @@ trait HandlesViews
         bool $isInternal = false
     ): string {
         $root = $isInternal
-            ? $_ENV['WPF_PACKAGE_DIR']
-            : $_ENV['WPF_PROJECT_ROOT'];
+            ? getPackageRoot()
+            : getProjectRoot();
 
         return plugin_dir_url("{$root}/composer.json") . $path;
     }
