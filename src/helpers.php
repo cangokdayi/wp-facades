@@ -28,3 +28,38 @@ if (!function_exists(__NAMESPACE__ . '\getProjectRoot')) {
         return dirname(getPackageRoot(), 3);
     }
 }
+
+if (!function_exists(__NAMESPACE__ . '\flattenArray')) {
+
+    /**
+     * Converts the given multi-dimensional array to single dimensional.
+     * 
+     * @param boolean $preserveKeys When set to TRUE, keys of the 1st level 
+     *                              items will be preserved.
+     */
+    function flattenArray(array $array, bool $preserveKeys = false): array
+    {
+        $merge = function ($x, $y) {
+            return (bool) array_intersect_key($x, $y)
+                ? array_merge($x, $y)
+                : $x + $y;
+        };
+
+        $flat = array_reduce($array, $merge, []);
+
+        return $preserveKeys
+            ? array_combine(array_keys($array), $flat)
+            : $flat;
+    }
+}
+
+if (!function_exists(__NAMESPACE__ . '\flatMap')) {
+
+    /**
+     * Maps the given array and flattens the result
+     */
+    function flatMap(callable $callback, array $array): array
+    {
+        return flattenArray(array_map($callback, $array));
+    }
+}
