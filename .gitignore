@@ -130,3 +130,5 @@ out
 
 package-lock.json
 vendor
+
+.DS_Store
