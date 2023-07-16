@@ -28,9 +28,11 @@ abstract class Service
     /** 
      * Registers the custom REST API routes of your service
      * 
+     * @param \WP_REST_Server $restAPI Server instance
+     * 
      * @see https://developer.wordpress.org/reference/hooks/rest_api_init/
      */
-    public function registerRoutes(): void
+    public function registerRoutes(\WP_REST_Server $restAPI): void
     {
         // 
     }
@@ -60,9 +62,11 @@ abstract class Service
     /** 
      * Registers the custom admin menu items of your service
      * 
+     * @param string $context Empty context
+     * 
      * @see https://developer.wordpress.org/reference/hooks/admin_menu/
      */
-    public function registerMenus(): void
+    public function registerMenus(string $context): void
     {
         //
     }
