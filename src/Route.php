@@ -172,9 +172,13 @@ final class Route
      */
     private function initRoute(...$args): void
     {
-        add_action('rest_api_init', function () use ($args) {
+        if (doing_action('rest_api_init')) {
             $this->registerRoute(...$args);
-        });
+        } else {
+            add_action('rest_api_init', function () use ($args) {
+                $this->registerRoute(...$args);
+            });
+        }
 
         add_action('admin_enqueue_scripts', [$this, 'insertAdminPanelNonce']);
     }
