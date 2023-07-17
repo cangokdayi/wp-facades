@@ -40,9 +40,11 @@ if (!function_exists(__NAMESPACE__ . '\flattenArray')) {
     function flattenArray(array $array, bool $preserveKeys = false): array
     {
         $merge = function ($x, $y) {
+            $getY = fn () => count($y) > 2 ? [$y] : $y;
+
             return (bool) array_intersect_key($x, $y)
-                ? array_merge($x, $y)
-                : $x + $y;
+                ? array_merge($x, $getY())
+                : $x + $getY();
         };
 
         $flat = array_reduce($array, $merge, []);
