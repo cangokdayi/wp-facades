@@ -153,6 +153,11 @@ final class Metabox
 
     /**
      * Sets a custom POST handler for saving setting fields
+     * 
+     * You can also use the "metabox__{metabox key}_save_field_{field key}"
+     * filter if you just need to cast/filter the value of some fields before
+     * they're saved to the database and they'll be filtered in our default 
+     * controller method `saveSettings()`
      *
      * @param callable|Closure $callback Controller method to call
      */
@@ -243,6 +248,10 @@ final class Metabox
                 ? json_encode($value)
                 : $value;
 
+            if (has_filter($hook = "metabox__{$this->id()}_save_field_$key")) {
+                $value = apply_filters($hook, $value);
+            }
+
             if (update_post_meta($postId, $key, $value) === false) {
                 $this->createAdminNotification(
                     'An error has occurred while saving the settings'
@@ -251,6 +260,16 @@ final class Metabox
         }
 
         $this->toggleBooleanSettings($postId, $booleanSettings, $_POST);
+    }
+
+    /**
+     * Returns the key property of this metabox 
+     *
+     * @return string
+     */
+    public function id(): string
+    {
+        return $this->key;
     }
 
     /**
